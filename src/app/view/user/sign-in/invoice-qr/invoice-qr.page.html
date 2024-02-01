@@ -1,0 +1,61 @@
+<ion-content scrollY="false">
+
+
+  <ion-header>
+    <ion-title class="ion-text-center">{{title}}</ion-title>
+  </ion-header>
+  <ion-card>
+    <ion-card-content>
+      <div class="text ion-text-center" id="pdfTable" #pdfTable>
+        <ion-text class="ion-text-center">
+          <p>
+            <strong>
+              {{INR}} : INR {{ final_amount | currency : "INR" }}
+            </strong>
+          </p>
+        </ion-text>
+        <h1>{{depositerName}}</h1>
+        <h1>{{depositerVpa}}</h1>
+      </div>
+
+      <div class="img">
+        <div class="wapper">
+          <!-- <qrcode #parent [qrdata]="qrString" [width]="256" [errorCorrectionLevel]="'M'" [cssClass]="'center'">
+          </qrcode> -->
+          <app-qrcode [qrString]="qrString"></app-qrcode>
+        </div>
+      </div>
+      <!-- <ion-text>Alt-Pi is collecting on behalf of {{partyName}}</ion-text> -->
+      <div class="logo" *ngIf="logoimg">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <div class="ion-text-start">{{ logotext }}</div>
+            </ion-col>
+            <ion-col>
+              <div class="ion-text-end">
+                <img [src]="logoimg" alt="eassebuzzlogo" width="105vw" />
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+      <ion-text class="ion-text-center">
+        <p>
+          <!-- <strong> Alt-Pi is collecting on behalf of {{ senderName }} </strong> -->
+        </p>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+  <br />
+  <!-- <ion-button expand="block" (click)="sharePDF(parent)">Share as PDF</ion-button>
+<ion-button expand="block" (click)="shareAsImage(parent)">Share as Image</ion-button> -->
+  <!-- <ion-button expand="block" (click)="shareOnWhatsapp()">Send URL as SMS / Link</ion-button> -->
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-button expand="block" fill="outline" (click)="backqr()">
+        {{backbtn}}
+      </ion-button>
+    </ion-row>
+  </ion-grid>
+</ion-content>

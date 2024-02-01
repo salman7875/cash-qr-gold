@@ -3,15 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  // apiEndpoint:'http://192.168.1.27:3005', // ashwariya
-  // apiEndpoint:'http://localhost:8009',
-  // apiEndpoint: 'http://192.168.1.16:8002',
-  // apiEndpoint: 'http://192.168.1.9:3005',
-  // apiEndpoint: 'https://alt-pi.in/demo', 
-  // apiEndpoint:'https://alt-pi.in/altpi',
-  apiEndpoint:'https://alt-pi.in/dev',
-  // apiEndpoint:'https://alt-pi.in/test',
-  production: false,
+  apiEndpoint: 'https://alt-pi.in/demo', 
 };
 /*
  * For easier debugging in development mode, you can import the following file

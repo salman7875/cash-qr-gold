@@ -24,3 +24,147 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+
+$breakpoints: (
+  xxs: 420px,
+  xs: 576px,
+  sm: 768px,
+  md: 992px,
+  lg: 1200px,
+  xl: 1440px,
+);
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin full-width-height {
+  width: 100%;
+  height: 100%;
+}
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  border-radius: $radius;
+}
+@mixin chat-msg($align: flex-end, $send: true) {
+  background-color: #d8d8d8;
+  max-width: 70%;
+  padding: 5px 20px;
+  margin: 0.5rem 0;
+  align-self: $align;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  @if ($send) {
+    border-bottom-left-radius: 20px;
+  } @else {
+    border-bottom-right-radius: 20px;
+  }
+}
+html {
+  font-size: 14px;
+}
+
+@mixin depth($depth) {
+  @if $depth < 1 {
+    box-shadow: none;
+  } @else if $depth > 5 {
+    @warn "Invalid $depth `#{$depth}` for mixin `card`.";
+  } @else {
+    box-shadow: bottom-shadow($depth), top-shadow($depth);
+  }
+}
+.c-pointer {
+  cursor: pointer;
+}
+@mixin respond-below($breakpoint) {
+  // If the breakpoint exists in the map.
+  @if map-has-key($breakpoints, $breakpoint) {
+    // Get the breakpoint value.
+    $breakpoint-value: map-get(
+      $breakpoints,
+      $breakpoint
+    ); // Write the media query.
+    @media (max-width: ($breakpoint-value - 1)) {
+      @content;
+    }
+    // If the breakpoint doesn't exist in the map.
+  } @else {
+    // Log a warning.
+    @warn "Invalid breakpoint: #{$breakpoint}.";
+  }
+}
+
+.auth-card {
+  display: flex;
+  flex-direction: row;
+  @include depth(1);
+  .image-side {
+    width: 40%;
+    // background: url("../src/assets/images/login/login-background.jpg") no-repeat center top;
+    background-size: cover;
+    padding: 40px 20px;
+    color: white;
+    p {
+      margin: 0 auto;
+    }
+  }
+  .form-side {
+    width: 60%;
+    padding: 10px 60px;
+  }
+  @include respond-below(md) {
+    flex-direction: column;
+
+    .image-side {
+      width: 100%;
+      padding: 30px;
+    }
+
+    .form-side {
+      width: 100%;
+      padding: 30px;
+    }
+  }
+
+  @include respond-below(xs) {
+    flex-direction: column;
+
+    .image-side {
+      padding: 10px;
+    }
+
+    .form-side {
+      padding: 10px;
+    }
+
+    .logo-single {
+      margin-bottom: 20px;
+    }
+
+    p.h2 {
+      font-size: 1.4rem;
+    }
+  }
+}
+.landing-section-title {
+  font-size: 1.2rem;
+}
+
+// ion menu
+.menu-content-open {
+  pointer-events: all !important;
+}
+
+.fixed-width {
+  padding: 20px;
+  // width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.padding {
+  padding: 5px;
+}

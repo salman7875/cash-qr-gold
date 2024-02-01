@@ -1,0 +1,51 @@
+img {
+    width: 5rem;
+  }
+  ion-header {
+    --padding-end: 0px;
+  }
+  
+  .neUpi_container {
+    width: 4rem;
+    // margin: -12px;
+    img {
+      width: 100%;
+      height: 50%;
+      margin-bottom: 10%;
+      margin-left: 30%;
+    }
+  }
+  .label {
+    font-size: 1.7rem;
+  }
+  .agentname {
+    font-size: 1.5rem;
+  }
+  .about {
+    position: sticky;
+  }
+  .footer-text {
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  ion-img {
+    width: 5rem;
+    height: 2.5rem;
+  }
+  .merchant_Logo {
+    // margin: 0 5px 2px 0;
+    width: 3rem;
+    height: 3rem;
+    margin: auto;
+  }
+  .logo{
+      width: 5rem;
+      height: 2.5rem;
+      object-fit: cover;
+      object-position: center;
+    
+  }
+  

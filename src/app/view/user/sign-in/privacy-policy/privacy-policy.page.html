@@ -1,0 +1,14 @@
+<ion-content>
+  <ion-card >
+    <ion-card-header class="ion-text-uppercase ion-text-center">
+      <h5>Privacy Policy</h5>
+    </ion-card-header>
+    <ion-card-content >
+      <ion-text class="ion-text-center ion-margin" *ngFor="let data of privacy">
+        <h2 class="ion-padding-bottom">{{ data.title }}</h2>
+        <p *ngFor="let p of data.description">{{ p }}</p>
+      </ion-text>
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>

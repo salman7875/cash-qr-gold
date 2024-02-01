@@ -1,0 +1,173 @@
+<ion-content [scrollY]="true" class="ion-padding-bottom">
+  <ion-refresher
+    slot="fixed"
+    [pullFactor]="0.5"
+    [pullMin]="100"
+    [pullMax]="200"
+    (ionRefresh)="handleRefresh($event)"
+  >
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-item>
+      <ion-select
+        placeholder="Select a User"
+        value="all"
+        (ionChange)="handleNameChange($event)"
+      >
+        <div slot="label">User</div>
+
+        <ion-select-option value="all"> All </ion-select-option>
+        <ion-select-option
+          *ngFor="let endUser of endUsers"
+          [value]="endUser.chId"
+        >
+          {{endUser.name}} :
+          <span *ngIf="endUser.accNo?.length !== null ">
+            {{endUser.accNo}}
+          </span>
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <ion-item lines="none">
+    <ion-segment #filter (ionChange)="dateForFilter(filter)" value="Today">
+      <ion-segment-button value="Today">
+        <ion-label>Today</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Week">
+        <ion-label>Week</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Month">
+        <ion-label>Month</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Year">
+        <ion-label>Year</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Custom">
+        <ion-label>Custom</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-item>
+
+  <div *ngIf="selectMode === 'Custom'">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div class="ion-text-center">
+            <h5>{{frombtn}}</h5>
+          </div>
+        </ion-col>
+        <ion-col>
+          <div class="ion-text-center">
+            <h5>{{tobtn}}</h5>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item id="From" lines="none">
+            <ion-icon icon="calendar-outline" color="primary"></ion-icon>
+            <ion-text style="font-size: 1rem" class="ion-text-center">
+              {{fromDateFormattedString | date:"dd-MM-yyyy"}}
+            </ion-text>
+          </ion-item>
+        </ion-col>
+
+        <ion-col size="6">
+          <ion-item id="To" lines="none">
+            <ion-icon icon="calendar-outline" color="primary"></ion-icon>
+            <ion-text style="font-size: 1rem">
+              {{toDateFormattedString | date:"dd-MM-yyyy"}}
+            </ion-text>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="full" (click)="applyCustom()">Apply</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-modal trigger="From">
+      <ng-template>
+        <ion-content>
+          <ion-datetime
+            #todateTime
+            presentation="date"
+            [value]="fromDateFormattedString"
+            size="cover"
+            (ionChange)="customFromDate(todateTime.value)"
+            showDefaultButtons="true"
+            (ionCancel)="fromShowPicker = false;"
+          >
+          </ion-datetime>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+    <ion-modal trigger="To">
+      <ng-template>
+        <ion-content>
+          <ion-datetime
+            #fromdateTime
+            presentation="date"
+            [value]="toDateFormattedString"
+            size="cover"
+            (ionChange)="customToDate(fromdateTime.value)"
+            showDefaultButtons="true"
+            (ionCancel)="toShowPicker = false;"
+          >
+          </ion-datetime>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  </div>
+
+  <ion-card
+    *ngFor="let transaction of filteredTxnHistory"
+    class="transaction-card"
+  >
+    <ion-card-header>
+      <ion-card-subtitle>
+        <div>
+          <span class="highlight">
+            {{ transaction.created_at | date }} {{ transaction.created_at | date
+            : "shortTime" }}
+          </span>
+          <span> {{ transaction.Mct_App_RefNo}} </span>
+        </div>
+
+        <div>
+          <h6>
+            Transaction No.
+            <span class="highlight">
+              {{transaction.unique_transaction_reference}}
+            </span>
+          </h6>
+        </div>
+        <div *ngIf="selectedUserChId === 'all'">
+          <h6>
+            <span *ngIf="transaction.endUserAccountNo" style="margin-left: 0px; margin-right: 1.5rem;"
+              >A/C No. <span class="highlight"> {{transaction.endUserAccountNo}} </span></span
+            >
+            <span class="highlight"> {{ transaction.VA_label | uppercase}} </span>
+          </h6>
+        </div>
+        <div></div>
+      </ion-card-subtitle>
+      <ion-card-title>
+        {{ transaction.amount | currency : "INR" }}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h6 *ngIf="selectedUserChId === 'all'">
+        Received from
+        <span *ngIf="selectedUserChId === 'all'" class="highlight">
+          {{ transaction.remitter_full_name }}
+        </span>
+      </h6>
+    </ion-card-content>
+  </ion-card>
+  <div class="extrapart">this is extra part for to show the transaction</div>
+</ion-content>

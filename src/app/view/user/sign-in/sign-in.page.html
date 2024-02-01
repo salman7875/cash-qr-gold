@@ -1,0 +1,82 @@
+<ion-menu contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>
+        {{menuName}}
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content [scrollY]="false" [fullscreen]="true">
+    <ion-list lines="none">
+
+      <ion-menu-toggle *ngFor="let menu of menuList">
+        <ion-item [routerLink]="menu?.ROUTE">
+          <ion-label class="ion-text-left">
+            {{ menu.MENU_OPTION}}
+          </ion-label>
+        </ion-item>
+      </ion-menu-toggle>
+
+    </ion-list>
+
+  </ion-content>
+  <ion-footer>
+    <div class="ion-margin">
+      <ion-select  label="Language" interface="popover" label-placement="floating" fill="outline" [value]="defaultlang" (ionChange)="languageSelection($event)">
+        <!-- <ion-select-option value="en">English</ion-select-option>
+        <ion-select-option value="mar">Marathi</ion-select-option>
+        <ion-select-option value="hin">Hindi</ion-select-option> -->
+        <ion-select-option *ngFor="let langs of availableLangs" [value]="langs.Language_Code">
+          {{langs.Language_Description}}
+        </ion-select-option>
+      </ion-select>
+    </div>
+  </ion-footer>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
+  <ion-header class="ion-no-padding">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-row class="ion-justify-content-end ion-align-items-baseline ion-padding-horizontal">
+        <img class="logo" [src]="logo ||'../../../../assets/images/logo/Alt_Pi_Logo.png'" alt="logo">
+        <div class="neUpi_container">
+          <img [src]="subLogo ||'../../../../assets/images/logo/dailyCollection.jpg'" alt="logo">
+        </div>
+      </ion-row>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content [scrollY]="false" class="ion-padding-vertical">
+    <ion-grid class="ion-padding-bottom about">
+      <ion-row class="">
+        <ion-col class="ion-text-left" size="10">
+          <ion-text class="label">
+            {{bussinessName}}
+          </ion-text>
+        </ion-col>
+        <ion-col class="flex" size="2">
+          <ion-avatar class="merchant_Logo ion-justify-content-center ion-align-items-center">
+            <img [src]="merchantLogo || defaultMercantLogo" />
+          </ion-avatar>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-text class="agentname">
+            <b>
+            </b>
+            {{agentname}}
+          </ion-text>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <router-outlet></router-outlet>
+  </ion-content>
+  <ion-footer style="height: 30px;">
+    <ion-title class="footer-text ion-text-center ">
+      {{footer}}
+    </ion-title>
+  </ion-footer>
+</div>
