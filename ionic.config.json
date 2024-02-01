@@ -1,0 +1,7 @@
+{
+  "name": "cash-Collection",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
