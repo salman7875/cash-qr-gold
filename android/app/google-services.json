@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "496616610910",
+    "project_id": "pushnotificationneupi",
+    "storage_bucket": "pushnotificationneupi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496616610910:android:e9639f67d1b1122a27a8cf",
+        "android_client_info": {
+          "package_name": "com.altpi.merchantapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "496616610910-iu5aqr4cjljb7ptvq7s07bt9bq26vg9i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbpKjxWPD1x6suC0QH_MmqKG3HUVGyjy4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "496616610910-iu5aqr4cjljb7ptvq7s07bt9bq26vg9i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
