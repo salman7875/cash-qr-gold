@@ -5,20 +5,26 @@ import { AppComponent } from './app.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'views',
-    pathMatch: 'full',
-  },
-  {
-    path: 'views',
-    loadChildren: () =>
-      import('./view/view.module').then((m) => m.ViewPageModule),
+    component: AppComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'views',
+        pathMatch: 'full',
+      },
+      {
+        path: 'views',
+        loadChildren: () =>
+          import('./view/view.module').then((m) => m.ViewPageModule),
+      },
+    ],
   },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}
