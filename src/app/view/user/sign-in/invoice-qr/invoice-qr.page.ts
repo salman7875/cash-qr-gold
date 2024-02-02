@@ -19,14 +19,15 @@ import { LoginService } from '../../login/service/login.service';
   styleUrls: ['./invoice-qr.page.scss'],
 })
 export class InvoiceQrPage implements OnInit {
-
   partyName: any;
   depositerVpa: any;
   depositerName: any;
   logoimg: string;
+  accountNo: any;
   // logotext: string = 'Alt-Pi is collecting on behalf of';
   logotext: string;
   title: any;
+  paymentType: any;
   qrString: string;
   final_amount: number = 0;
   encodestring: string;
@@ -50,12 +51,13 @@ export class InvoiceQrPage implements OnInit {
       this.router.getCurrentNavigation()?.extras.state?.['vpa'];
     this.depositerName =
       this.router.getCurrentNavigation()?.extras.state?.['depositerName'];
+    this.paymentType = this.router.getCurrentNavigation()?.extras.state?.['paymentType']
   }
 
   ngOnInit() {
     this.langService.currentLang.subscribe((data) => {
       this.currentLang = data;
-      this.title = data?.PAYMENT_QR;
+      this.title = this.paymentType === 'q' ? data?.PAYMENT_QR : data?.PAYMENT_C
       this.INR = data?.INR_Amount;
       this.backbtn = data?.BACK;
     });
@@ -64,12 +66,15 @@ export class InvoiceQrPage implements OnInit {
       .post(`${this.config}/ccsa/initiateTransaction`, {
         vpa: this.depositerVpa,
         amount: this.final_amount,
+        payment_mode: this.paymentType
       })
       .subscribe((data: any) => {
         this.refNo = data?.appRefNo;
         this.logotext = data?.displayMsg;
         this.logoimg = 'data:image/png;base64,' + data?.switchLogo;
-        this.qrString = `upi://pay?pa=${this.depositerVpa}&pn=${this.depositerName}&am=${this.final_amount}&tr=${this.refNo}`;
+        if (this.paymentType === 'q') {
+          this.qrString = `upi://pay?pa=${this.depositerVpa}&pn=${this.depositerName}&am=${this.final_amount}&tr=${this.refNo}`;
+        }
       });
   }
 
@@ -79,4 +84,22 @@ export class InvoiceQrPage implements OnInit {
     this.router.navigate(['../new-bill'], { relativeTo: this.route.parent });
   }
 
+  paymentHandler() {
+    this.http.post(`${this.config}/cashcollect`, {
+      vpa: this.depositerVpa,
+      amount: this.final_amount,
+      payment_mode: this.paymentType,
+      AppRefSrNo: this.refNo
+    }).subscribe({
+      next(data: any) {
+        console.log(data);
+      },
+      complete() {
+        console.log('Payment Completed!!!');
+      },
+      error(err) {
+        console.log(err);
+      },
+    })
+  }
 }
