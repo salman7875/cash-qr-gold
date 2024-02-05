@@ -32,6 +32,7 @@ export class InvoiceQrPage implements OnInit {
   final_amount: number = 0;
   encodestring: string;
   refNo: any;
+  endUserData
 
   //languages
   currentLang: any;
@@ -45,19 +46,18 @@ export class InvoiceQrPage implements OnInit {
     @Inject(App_Service_Config) public config: string,
     private http: HttpClient
   ) {
-    this.final_amount =
-      this.router.getCurrentNavigation()?.extras.state?.['finalAmount'];
-    this.depositerVpa =
-      this.router.getCurrentNavigation()?.extras.state?.['vpa'];
-    this.depositerName =
-      this.router.getCurrentNavigation()?.extras.state?.['depositerName'];
-    this.paymentType = this.router.getCurrentNavigation()?.extras.state?.['paymentType']
+    this.final_amount = this.router.getCurrentNavigation()?.extras.state?.['finalAmount'];
+    this.endUserData = this.router.getCurrentNavigation()?.extras.state?.['endUserData']
+    this.depositerVpa = this.endUserData?.vpa
+    this.depositerName = this.endUserData?.name;
+    this.paymentType = this.router.getCurrentNavigation()?.extras.state?.['paymentType'];
   }
 
   ngOnInit() {
     this.langService.currentLang.subscribe((data) => {
       this.currentLang = data;
-      this.title = this.paymentType === 'q' ? data?.PAYMENT_QR : data?.PAYMENT_C
+      this.title =
+        this.paymentType === 'q' ? data?.PAYMENT_QR : data?.PAYMENT_C;
       this.INR = data?.INR_Amount;
       this.backbtn = data?.BACK;
     });
@@ -66,7 +66,7 @@ export class InvoiceQrPage implements OnInit {
       .post(`${this.config}/ccsa/initiateTransaction`, {
         vpa: this.depositerVpa,
         amount: this.final_amount,
-        payment_mode: this.paymentType
+        payment_mode: this.paymentType,
       })
       .subscribe((data: any) => {
         this.refNo = data?.appRefNo;
@@ -76,6 +76,7 @@ export class InvoiceQrPage implements OnInit {
           this.qrString = `upi://pay?pa=${this.depositerVpa}&pn=${this.depositerName}&am=${this.final_amount}&tr=${this.refNo}`;
         }
       });
+    
   }
 
   //Function
@@ -85,21 +86,23 @@ export class InvoiceQrPage implements OnInit {
   }
 
   paymentHandler() {
-    this.http.post(`${this.config}/cashcollect`, {
-      vpa: this.depositerVpa,
-      amount: this.final_amount,
-      payment_mode: this.paymentType,
-      AppRefSrNo: this.refNo
-    }).subscribe({
-      next(data: any) {
-        console.log(data);
-      },
-      complete() {
-        console.log('Payment Completed!!!');
-      },
-      error(err) {
-        console.log(err);
-      },
-    })
+    this.http
+      .post(`${this.config}/cashcollect`, {
+        vpa: this.depositerVpa,
+        amount: this.final_amount,
+        payment_mode: this.paymentType,
+        AppRefSrNo: this.refNo,
+      })
+      .subscribe({
+        next(data: any) {
+          console.log(data)
+        },
+        complete() {
+          console.log('Payment Completed!!!');
+        },
+        error(err) {
+          console.log(err);
+        },
+      });
   }
 }

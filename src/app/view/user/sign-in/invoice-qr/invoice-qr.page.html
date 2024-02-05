@@ -13,7 +13,9 @@
           </p>
         </ion-text>
         <h1>{{depositerName}}</h1>
-        <h1 *ngIg="paymentType === 'q'">{{depositerVpa}}</h1>
+        <h1 *ngIf="paymentType === 'q'">{{depositerVpa}}</h1>
+        <h1 *ngIf="paymentType === 'c'">Account Number : {{this.endUserData?.accNo}}</h1>
+        
       </div>
 
       <div class="img">
@@ -21,15 +23,16 @@
           <!-- <qrcode #parent [qrdata]="qrString" [width]="256" [errorCorrectionLevel]="'M'" [cssClass]="'center'">
           </qrcode> -->
           <app-qrcode [qrString]="qrString" *ngIf="paymentType === 'q'"></app-qrcode>
-          <div *ngIf="paymentType === 'c'">
+          <!-- <div *ngIf="paymentType === 'c'">
             <ion-list>
               <ion-item>
-                <ion-input type="number" label="Account Number" labelPlacement="floating"
-                  placeholder="Enter user account number" [(ngModel)]="accountNo" required></ion-input>
+               <span>
+                {{this.endUserData?.accNo}}
+               </span>
               </ion-item>
-              <ion-button expand="block" (click)="paymentHandler()">Pay</ion-button>
+              <ion-button expand="block" (click)="paymentHandler()">Conform Payment</ion-button>
             </ion-list>
-          </div>
+          </div> -->
         </div>
       </div>
       <!-- <ion-text>Alt-Pi is collecting on behalf of {{partyName}}</ion-text> -->
@@ -59,6 +62,10 @@
 <ion-button expand="block" (click)="shareAsImage(parent)">Share as Image</ion-button> -->
   <!-- <ion-button expand="block" (click)="shareOnWhatsapp()">Send URL as SMS / Link</ion-button> -->
   <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-button (click)="paymentHandler()">Conform Payment
+      </ion-button>
+    </ion-row>
     <ion-row class="ion-justify-content-center">
       <ion-button expand="block" fill="outline" (click)="backqr()">
         {{backbtn}}

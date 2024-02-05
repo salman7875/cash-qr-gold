@@ -25,6 +25,8 @@ export class InvoiceAmountPage implements OnInit {
   back: string;
   amountPlaceHolder: string;
 
+  isButtonDisabled: boolean;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -32,8 +34,6 @@ export class InvoiceAmountPage implements OnInit {
   ) {
     this.enterUserData =
       this.router.getCurrentNavigation()?.extras.state?.['userData'];
-    this.depositerName = this.enterUserData?.name;
-    this.depositerVpa = this.enterUserData?.vpa
   }
 
   ngOnInit() {
@@ -45,7 +45,7 @@ export class InvoiceAmountPage implements OnInit {
     this.back = this.currentLang?.BACK
     this.amountPlaceHolder = this.currentLang?.AMOUNTINPUT_PLACEHOLDER
   }
-  isButtonDisabled: boolean;
+  
 
   generateHandler(type: string) {
     if (this.amount > 0) {
@@ -54,8 +54,7 @@ export class InvoiceAmountPage implements OnInit {
         relativeTo: this.route.parent,
         state: {
           finalAmount: this.amount,
-          depositerName: this.depositerName,
-          vpa: this.depositerVpa,
+          endUserData: this.enterUserData,
           paymentType: type
         },
       });

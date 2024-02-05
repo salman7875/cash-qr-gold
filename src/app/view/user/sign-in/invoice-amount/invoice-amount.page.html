@@ -6,7 +6,7 @@
     <ion-card-content>
       <div class="text">
         <form>
-          <ion-input [(ngModel)]="depositerName" name="depositerName" type="text" [value]="depositerName" readonly
+          <ion-input name="depositerName" type="text" [value]="enterUserData?.name" readonly
             fill="outline"></ion-input>
           <br />
           <ion-input [(ngModel)]="amount" name="amount" type="number" [placeholder]="amountPlaceHolder"
