@@ -4,6 +4,7 @@
 
 export const environment = {
   apiEndpoint: 'https://alt-pi.in/demo', 
+  production: false,
 };
 /*
  * For easier debugging in development mode, you can import the following file
