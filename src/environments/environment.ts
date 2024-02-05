@@ -5,7 +5,7 @@
 export const environment = {
   // apiEndpoint:'http://192.168.1.27:3005', // ashwariya
   // apiEndpoint:'http://localhost:8002',
-  apiEndpoint: 'http://192.168.1.12:8002',
+  apiEndpoint: 'http://localhost:8002',
   // apiEndpoint: 'http://192.168.1.9:3005',
   // apiEndpoint: 'https://alt-pi.in/demo', 
   // apiEndpoint:'https://alt-pi.in/altpi',

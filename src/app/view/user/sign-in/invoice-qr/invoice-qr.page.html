@@ -15,7 +15,7 @@
         <h1>{{depositerName}}</h1>
         <h1 *ngIf="paymentType === 'q'">{{depositerVpa}}</h1>
         <h1 *ngIf="paymentType === 'c'">Account Number : {{this.endUserData?.accNo}}</h1>
-        
+
       </div>
 
       <div class="img">
@@ -62,10 +62,13 @@
 <ion-button expand="block" (click)="shareAsImage(parent)">Share as Image</ion-button> -->
   <!-- <ion-button expand="block" (click)="shareOnWhatsapp()">Send URL as SMS / Link</ion-button> -->
   <ion-grid>
-    <ion-row class="ion-justify-content-center">
-      <ion-button (click)="paymentHandler()">Conform Payment
+    <ion-row class="ion-justify-content-center" *ngIf="paymentType === 'c'">
+      <ion-button (click)="paymentHandler()" id="present-alert">Confirm Payment
       </ion-button>
     </ion-row>
+    <ion-alert trigger="present-alert" header="Payment Success!" [buttons]="alertButtons"
+      (didDismiss)="closeAlert($event)"></ion-alert>
+
     <ion-row class="ion-justify-content-center">
       <ion-button expand="block" fill="outline" (click)="backqr()">
         {{backbtn}}

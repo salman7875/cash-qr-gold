@@ -9,12 +9,13 @@ import { LoginService } from './service/login.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent  implements OnInit {
+export class LoginComponent implements OnInit {
 
   errMsg: string;
   Credential: any = {
-    mobileno: 9876543225,
-    password: '123456',
+    // mobileno: 9876543225,
+    mobileno: '',
+    password: '',
   };
   // loginWithOtp = false;
 
@@ -23,7 +24,7 @@ export class LoginComponent  implements OnInit {
     private route: ActivatedRoute,
     private loginService: LoginService,
     private localStorageService: LocalstorageService
-  ) {}
+  ) { }
 
   ngOnInit() {
     console.log(this.route.parent);
@@ -48,14 +49,14 @@ export class LoginComponent  implements OnInit {
       Mobile: Number(this.Credential.mobileno),
       password: this.Credential.password,
       browserToken,
-      Application_Id:1,
+      Application_Id: 1,
     };
 
     console.log(data);
     this.loginService.sendLoginCredential(data).subscribe({
       next: (data: any) => {
         this.loginService.loginData = data;
-        console.log("login Data : ",this.loginService.loginData);
+        console.log("login Data : ", this.loginService.loginData);
         // this.router.navigate(['./signin'], { relativeTo: this.route.parent });
         this.router.navigateByUrl('views/user/signin');
         // this.localStorageService.setItem('AuthToken', data?.data?.AuthToken);
