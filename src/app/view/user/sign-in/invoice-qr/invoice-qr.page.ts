@@ -53,6 +53,23 @@ export class InvoiceQrPage implements OnInit {
     this.paymentType = this.router.getCurrentNavigation()?.extras.state?.['paymentType'];
   }
 
+  // public alertButtons = [
+  //   {
+  //     text: 'Cancel',
+  //     role: 'cancel',
+  //     handler: () => {
+  //       this.router.navigate(['../qr-code'], { relativeTo: this.route.parent })
+  //     },
+  //   },
+  //   {
+  //     text: 'OK',
+  //     role: 'confirm',
+  //     handler: () => {
+  //       this.router.navigate(['../new-bill'], { relativeTo: this.route.parent });
+  //     },
+  //   },
+  // ];
+
   ngOnInit() {
     this.langService.currentLang.subscribe((data) => {
       this.currentLang = data;
@@ -76,10 +93,8 @@ export class InvoiceQrPage implements OnInit {
           this.qrString = `upi://pay?pa=${this.depositerVpa}&pn=${this.depositerName}&am=${this.final_amount}&tr=${this.refNo}`;
         }
       });
-    
-  }
 
-  //Function
+  }
 
   backqr() {
     this.router.navigate(['../new-bill'], { relativeTo: this.route.parent });
@@ -105,4 +120,9 @@ export class InvoiceQrPage implements OnInit {
         },
       });
   }
+
+  // closeAlert(e: any) {
+  //   console.log(e.detail.role);
+
+  // }
 }
