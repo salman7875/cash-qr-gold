@@ -3,10 +3,10 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: AppComponent,
-    children: [
+  // {
+  //   path: '',
+  //   component: AppComponent,
+  //   children: [
       {
         path: '',
         redirectTo: 'views',
@@ -17,8 +17,8 @@ const routes: Routes = [
         loadChildren: () =>
           import('./view/view.module').then((m) => m.ViewPageModule),
       },
-    ],
-  },
+  //   ],
+  // },
 ];
 
 @NgModule({

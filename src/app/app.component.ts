@@ -12,6 +12,7 @@ import { Share } from '@capacitor/share';
 import { LoginService } from './view/user/login/service/login.service';
 import { TransactionReportService } from './view/user/sign-in/transaction-report/service/transaction-report.service';
 import { format } from 'date-fns';
+import { PdfGeneratorService } from './service/pdf-generator.service';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -42,7 +43,8 @@ export class AppComponent implements OnInit {
     private localStorageService: LocalstorageService,
     private languageService: LanguageService,
     private loginService: LoginService,
-    private transactionService: TransactionReportService
+    private transactionService: TransactionReportService,
+    private pdfService: PdfGeneratorService
   ) {}
   ngOnInit() {
     console.log('Initializing HomePage');
@@ -80,11 +82,9 @@ export class AppComponent implements OnInit {
       'pushNotificationReceived',
       (notifications: PushNotificationSchema) => {
         this.message = notifications?.body;
-        this.router.navigate(['signin/new-bill'], {
-          relativeTo: this.route.parent,
-        });
+        this.router.navigateByUrl('views/user/signin/new-bill');
         console.log('message recieved android', notifications);
-        this.isModalOpen = true;
+
         // const amountPattern =/\INR\.\d+(\.\d+)?/;
         const amountPattern = /\d+(\.\d+)?/;
         const receivedFromPattern = /received from (.*?) Ref no -/;
@@ -140,6 +140,7 @@ export class AppComponent implements OnInit {
             )[0];
             console.log('this is txn : ', this.txn);
           });
+          this.isModalOpen = true;
         } else {
           console.log('Pattern not matched.');
         }
@@ -156,26 +157,34 @@ export class AppComponent implements OnInit {
   }
   closeModal(isOpen: boolean) {
     this.isModalOpen = isOpen;
+    console.log('isOpen', isOpen);
   }
   async Share() {
     console.log(this.collectionAgentInfo);
     this.textToShare = `Agent Name: ${
       this.collectionAgentInfo?.F_name + ' ' + this.collectionAgentInfo?.L_name
-    } \nApp Ref. Number: ${this.txn.Mct_App_RefNo} \nTxn Number: ${this.txn.unique_transaction_reference} \nAccount Number: ${
-      this.txn.remitter_account_number
-    } \nCustomer Name: ${this.sender} \nCollected Amount: ${
-      this.txn.amount
-    } \nCollectionDate: ${format(
+    } \nApp Ref. Number: ${this.txn.Mct_App_RefNo} \nTxn Number: ${
+      this.txn.unique_transaction_reference
+    } \nAccount Number: ${this.txn.remitter_account_number} \nCustomer Name: ${
+      this.sender
+    } \nCollected Amount: ${this.txn.amount} \nCollectionDate: ${format(
       new Date(this.txn.created_at.replace(/ /g, '')),
       'dd-MM-yyyy'
     )} \n`;
     console.log(this.textToShare);
-    if(this.collectionAgentInfo){
-      await Share.share({
-        title: 'Share via',
-        text: this.textToShare,
-        dialogTitle: 'Share',
-      });
+    if (this.collectionAgentInfo) {
+      const pdf = await this.pdfService.generatePdf(this.textToShare);
+      const pdfInfo = await this.pdfService.savePdfToDevice(pdf, 'Receipt');
+      console.log(pdfInfo);
+      try {
+        await Share.share({
+          title: 'Share PDF',
+          url: pdfInfo?.pdfUriPath?.uri, // Path to the PDF file
+          dialogTitle: 'Choose an app',
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 }

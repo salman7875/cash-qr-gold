@@ -37,9 +37,11 @@ export class SignInPage implements OnInit {
   async ngOnInit() {
     const { value } = await Preferences.get({ key: 'lang' });
     this.defaultlang = value
-
+    
     //setting the language on load
     this.langService.currentLang.subscribe(data => {
+      console.log(this.loginService.loginData)
+      console.log(data)
       this.currentLang = data;
       this.footer = data?.FOOTER_TEXT ;
       this.menuName = data?.MENU;

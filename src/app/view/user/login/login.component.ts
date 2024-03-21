@@ -13,8 +13,8 @@ export class LoginComponent implements OnInit {
 
   errMsg: string;
   Credential: any = {
-    // mobileno: 9876543225,
-    mobileno: '',
+    mobileno: 9876543225,
+    // mobileno: '',
     password: '',
   };
   // loginWithOtp = false;
