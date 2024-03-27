@@ -14,6 +14,6 @@ export class LoginService {
     private http: HttpClient
   ) {}
   sendLoginCredential(data: any) {
-    return this.http.post(`${this.config}/ccsa/login`, data); 
+    return this.http.post(`${this.config}/crdsoc/login`, data); 
   }
 }
