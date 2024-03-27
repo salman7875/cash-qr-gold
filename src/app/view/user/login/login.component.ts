@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
 
   errMsg: string;
   Credential: any = {
-    mobileno: 9876543225,
+    mobile: 9876543225,
     // mobileno: '',
     password: '',
   };
@@ -46,10 +46,10 @@ export class LoginComponent implements OnInit {
     } */
     const browserToken = this.localStorageService.getItem('browserToken');
     const data = {
-      Mobile: Number(this.Credential.mobileno),
+      mobile: Number(this.Credential.mobile),
       password: this.Credential.password,
       browserToken,
-      Application_Id: 1,
+      appId: 1,
     };
 
     console.log(data);
