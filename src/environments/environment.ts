@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  // apiEndpoint:'http://192.168.1.27:3005', // ashwariya
+  apiEndpoint:'http://192.168.1.11:8010', // ashwariya
   // apiEndpoint:'http://localhost:8002',
   // apiEndpoint: 'http://localhost:8002',
   apiEndpoint: 'http://192.168.1.11:8010',

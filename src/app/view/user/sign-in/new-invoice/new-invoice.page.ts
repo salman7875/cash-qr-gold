@@ -37,12 +37,12 @@ export class NewInvoicePage implements OnInit {
       this.searchPlaceHolder = data?.SEARCHBAR_PLACEHOLDER;
     });
     this.label = this.loginService.loginData?.collectionAgentDetails?.label;
-    this.endUsers = this.loginService.loginData?.endUsers;
+    this.endUsers = this.loginService.loginData.data?.endUsers;
   }
 
   handleInput(event: any) {
     const query = event.target.value.toLowerCase();
-    this.endUsers = this.loginService.loginData.endUsers.filter(
+    this.endUsers = this.loginService.loginData.data.endUsers.filter(
       (d: any) => d.name.toLowerCase().indexOf(query) > -1
     );
   }
