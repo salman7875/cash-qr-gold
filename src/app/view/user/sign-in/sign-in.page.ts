@@ -66,9 +66,9 @@ export class SignInPage implements OnInit {
     this.bussinessName = this.loginService.loginData?.userInfo?.Party_Name;
 
     this.agentname =
-      this.loginService.loginData?.userInfo?.F_name +
+    this.loginService.loginData.data?.userInfo?.F_name +
       ' ' +
-      this.loginService.loginData?.userInfo?.L_name;
+      this.loginService.loginData.data.userInfo.L_name
 
     //footer from language service
 
