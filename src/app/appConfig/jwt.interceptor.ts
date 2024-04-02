@@ -17,7 +17,7 @@ export class JwtInterceptor implements HttpInterceptor {
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    this.getToken()
+    this.getToken();
     request = request.clone({
       setHeaders: {
         Authorization: `Bearer ${this.token}`,
@@ -27,6 +27,7 @@ export class JwtInterceptor implements HttpInterceptor {
   }
 
   async getToken() {
-    this.token = await Preferences.get({ key: 'jwt' });
+    const { value } = await Preferences.get({ key: 'jwt' });
+    this.token = value;
   }
 }
