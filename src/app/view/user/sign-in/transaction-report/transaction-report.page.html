@@ -169,5 +169,8 @@
       </h6>
     </ion-card-content>
   </ion-card>
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
   <div class="extrapart">this is extra part for to show the transaction</div>
 </ion-content>

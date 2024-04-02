@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { TransactionReportService } from './service/transaction-report.service';
 
-import {format} from 'date-fns/format';
-import {parseISO} from 'date-fns/parseISO';
+import { format } from 'date-fns/format';
+import { parseISO } from 'date-fns/parseISO';
 import { LanguageService } from 'src/app/shared/services/language/language.service';
 import { LoginService } from '../../login/service/login.service';
+import { InfiniteScrollCustomEvent } from '@ionic/angular';
 
 @Component({
   selector: 'app-transaction-report',
@@ -20,7 +21,8 @@ export class TransactionReportPage implements OnInit {
   filteredTxnHistory: any; //transaction history that is being showed to the user
   frombtn: string;
   tobtn: string;
-  
+  page: number = 1;
+
 
   // variables for date and time
   selectMode: string = 'Today'; // Today | Week | Month | Year
@@ -89,15 +91,15 @@ export class TransactionReportPage implements OnInit {
     this.tracsactionService.applyCustom(data).subscribe((data: any) => {
       this.yearTransactionHistory = data.reverse();
       console.log('Year Txn History', this.yearTransactionHistory);
-       this.yearTransactionHistory.map((data:any)=>{
+      this.yearTransactionHistory.map((data: any) => {
         // console.log(data.VA_label);
         for (let i = 0; i < this.loginService.loginData.endUsers.length; i++) {
-          let username=this.loginService.loginData.endUsers[i].name
-          username=username.replace(/ /g,"").toLowerCase()
-          if(username === data.VA_label.toLowerCase()){
+          let username = this.loginService.loginData.endUsers[i].name
+          username = username.replace(/ /g, "").toLowerCase()
+          if (username === data.VA_label.toLowerCase()) {
             return data.VA_label = this.loginService.loginData.endUsers[i].name
           }
-          return ;
+          return;
         }
       });
 
@@ -242,10 +244,10 @@ export class TransactionReportPage implements OnInit {
         this.selectedUserChId === 'all'
           ? data.reverse()
           : data
-              .reverse()
-              .filter(
-                (e) => e.Mct_App_RefNo.split('/')[1] == this.selectedUserChId
-              );
+            .reverse()
+            .filter(
+              (e) => e.Mct_App_RefNo.split('/')[1] == this.selectedUserChId
+            );
     });
   }
 
@@ -261,6 +263,13 @@ export class TransactionReportPage implements OnInit {
       this.transactionData();
       event.target.complete();
     }, 200);
+  }
+
+  onIonInfinite(event: InfiniteScrollCustomEvent) {
+    // this.page += 1
+    console.log(event.eventPhase);
+    
+    event.target.complete()
   }
 
 }
