@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { LocalstorageService } from 'src/app/shared/services/localStorageService/localstorage.service';
 import { LoginService } from './service/login.service';
-import { Preferences } from '@capacitor/preferences';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -55,12 +54,9 @@ export class LoginComponent implements OnInit {
 
     console.log(data);
     this.loginService.sendLoginCredential(data).subscribe({
-      next: async (result: any) => {
-        this.loginService.loginData = result.data;
-        await Preferences.set({key:"loginData",value:result.data})
-        await Preferences.set({key:"jwt",value:result.JWT})
+      next: (data: any) => {
+        this.loginService.loginData = data;
         console.log("login Data : ", this.loginService.loginData);
-        
         // this.router.navigate(['./signin'], { relativeTo: this.route.parent });
         this.router.navigateByUrl('views/user/signin');
         // this.localStorageService.setItem('AuthToken', data?.data?.AuthToken);

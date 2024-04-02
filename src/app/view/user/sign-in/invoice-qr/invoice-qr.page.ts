@@ -19,7 +19,7 @@ import { LoginService } from '../../login/service/login.service';
   styleUrls: ['./invoice-qr.page.scss'],
 })
 export class InvoiceQrPage implements OnInit {
-  Party_Name: any;
+  partyName: any;
   depositerVpa: any;
   depositerName: any;
   logoimg: string;
@@ -77,12 +77,10 @@ export class InvoiceQrPage implements OnInit {
         this.paymentType === 'q' ? data?.PAYMENT_QR : data?.PAYMENT_C;
       this.INR = data?.INR_Amount;
       this.backbtn = data?.BACK;
-      this.Party_Name = this.loginService.loginData.data.userInfo.Party_Name;
-      console.log(this.Party_Name);
     });
-    
+    this.partyName = this.loginService.loginData.userInfo.Party_Name;
     this.http
-      .post(`${this.config}/crdsoc/init-txn`, {
+      .post(`${this.config}/ccsa/initiateTransaction`, {
         vpa: this.depositerVpa,
         amount: this.final_amount,
         payment_mode: this.paymentType,
@@ -104,7 +102,7 @@ export class InvoiceQrPage implements OnInit {
 
   paymentHandler() {
     this.http
-      .post(`${this.config}/crdsoc/cash`, {
+      .post(`${this.config}/cashcollect`, {
         vpa: this.depositerVpa,
         amount: this.final_amount,
         payment_mode: this.paymentType,
