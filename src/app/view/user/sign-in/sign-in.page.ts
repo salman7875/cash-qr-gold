@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LanguageService } from 'src/app/shared/services/language/language.service';
 import { Preferences } from '@capacitor/preferences';
 import { LoginService } from '../login/service/login.service';
-export interface menuList{
-  MENU_OPTION: string,
-  ROUTE:string,
+export interface menuList {
+  MENU_OPTION: string;
+  ROUTE: string;
 }
 
 @Component({
@@ -15,19 +15,19 @@ export interface menuList{
   styleUrls: ['./sign-in.page.scss'],
 })
 export class SignInPage implements OnInit {
-
   logo: string;
   subLogo: string;
   footer: string = 'Technical solution provided by Alt-pi';
   merchantLogo: string;
-  defaultMercantLogo: string = 'https://ionicframework.com/docs/img/demos/avatar.svg';
+  defaultMercantLogo: string =
+    'https://ionicframework.com/docs/img/demos/avatar.svg';
   agentname: string;
   bussinessName: string;
   menuName: string;
-  menuList:menuList[];
-  currentLang : any;
-  availableLangs:any;
-  defaultlang:any;
+  menuList: menuList[];
+  currentLang: any;
+  availableLangs: any;
+  defaultlang: any;
 
   constructor(
     private loginService: LoginService,
@@ -36,19 +36,20 @@ export class SignInPage implements OnInit {
 
   async ngOnInit() {
     const { value } = await Preferences.get({ key: 'lang' });
-    this.defaultlang = value
-    
+    this.defaultlang = value;
+
     //setting the language on load
-    this.langService.currentLang.subscribe(data => {
-      console.log(this.loginService.loginData)
-      console.log(data)
+    this.langService.currentLang.subscribe((data) => {
+      console.log(this.loginService.loginData);
+      console.log(data);
       this.currentLang = data;
-      this.footer = data?.FOOTER_TEXT ;
+      this.footer = data?.FOOTER_TEXT;
       this.menuName = data?.MENU;
-      this.menuList = data?.SIDEMENU;
+      this.menuList = data?.sideMenuData;
     });
-    this.availableLangs = this.loginService.loginData?.languages;
-    this.merchantLogo =  this.loginService.loginData?.collectionAgent?.logo || '';
+    this.availableLangs = this.loginService.loginData?.UI?.languages;
+    this.merchantLogo =
+      this.loginService.loginData?.collectionAgent?.logo || '';
     if (this.merchantLogo !== '') {
       this.merchantLogo = 'data:image/png;base64,' + this.merchantLogo;
     }
@@ -62,21 +63,18 @@ export class SignInPage implements OnInit {
     if (this.subLogo !== '') {
       this.subLogo = 'data:image/png;base64,' + this.subLogo;
     }
-    
+
     this.bussinessName = this.loginService.loginData?.userInfo?.Party_Name;
 
     this.agentname =
-    this.loginService.loginData.data?.userInfo?.F_name +
+      this.loginService.loginData.data?.userInfo?.F_name +
       ' ' +
-      this.loginService.loginData.data.userInfo.L_name
+      this.loginService.loginData.data.userInfo.L_name;
 
     //footer from language service
-
-   
   }
 
-  languageSelection(e:any){
+  languageSelection(e: any) {
     this.langService.setLang(e.detail.value);
   }
-
 }

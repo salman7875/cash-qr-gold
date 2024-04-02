@@ -32,7 +32,7 @@ export class InvoiceQrPage implements OnInit {
   final_amount: number = 0;
   encodestring: string;
   refNo: any;
-  endUserData
+  endUserData;
 
   //languages
   currentLang: any;
@@ -46,11 +46,14 @@ export class InvoiceQrPage implements OnInit {
     @Inject(App_Service_Config) public config: string,
     private http: HttpClient
   ) {
-    this.final_amount = this.router.getCurrentNavigation()?.extras.state?.['finalAmount'];
-    this.endUserData = this.router.getCurrentNavigation()?.extras.state?.['endUserData']
-    this.depositerVpa = this.endUserData?.vpa
+    this.final_amount =
+      this.router.getCurrentNavigation()?.extras.state?.['finalAmount'];
+    this.endUserData =
+      this.router.getCurrentNavigation()?.extras.state?.['endUserData'];
+    this.depositerVpa = this.endUserData?.vpa;
     this.depositerName = this.endUserData?.name;
-    this.paymentType = this.router.getCurrentNavigation()?.extras.state?.['paymentType'];
+    this.paymentType =
+      this.router.getCurrentNavigation()?.extras.state?.['paymentType'];
   }
 
   // public alertButtons = [
@@ -80,20 +83,22 @@ export class InvoiceQrPage implements OnInit {
     });
     this.partyName = this.loginService.loginData.userInfo.Party_Name;
     this.http
-      .post(`${this.config}/ccsa/initiateTransaction`, {
+      .post(`${this.config}/crdsoc/init-txn`, {
         vpa: this.depositerVpa,
         amount: this.final_amount,
         payment_mode: this.paymentType,
       })
-      .subscribe((data: any) => {
-        this.refNo = data?.appRefNo;
-        this.logotext = data?.displayMsg;
-        this.logoimg = 'data:image/png;base64,' + data?.switchLogo;
-        if (this.paymentType === 'q') {
-          this.qrString = `upi://pay?pa=${this.depositerVpa}&pn=${this.depositerName}&am=${this.final_amount}&tr=${this.refNo}`;
-        }
-      });
+      .subscribe((result: any) => {
+        console.log(result);
 
+        this.refNo = result?.data?.appRefNo;
+        this.logotext = 'Powered By';
+        this.logoimg = 'data:image/png;base64,' + result?.data?.switchLogo;
+        // if (this.paymentType === 'q') {
+        //   this.qrString = `upi://pay?pa=${this.depositerVpa}&pn=${this.depositerName}&am=${this.final_amount}&tr=${this.refNo}`;
+        // }
+        this.qrString = result?.data?.intent;
+      });
   }
 
   backqr() {
@@ -102,15 +107,15 @@ export class InvoiceQrPage implements OnInit {
 
   paymentHandler() {
     this.http
-      .post(`${this.config}/cashcollect`, {
+      .post(`${this.config}/crdsoc/cash`, {
         vpa: this.depositerVpa,
         amount: this.final_amount,
         payment_mode: this.paymentType,
-        AppRefSrNo: this.refNo,
+        appRefNo: this.refNo,
       })
       .subscribe({
         next(data: any) {
-          console.log(data)
+          console.log(data);
         },
         complete() {
           console.log('Payment Completed!!!');
