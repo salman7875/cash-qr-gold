@@ -12,7 +12,6 @@ import { LoginService } from '../../login/service/login.service';
   styleUrls: ['./new-invoice.page.scss'],
 })
 export class NewInvoicePage implements OnInit {
-
   agentLogo: string;
   title: any;
   label: any = 'Merchant Details';
@@ -31,18 +30,20 @@ export class NewInvoicePage implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log(this.loginService.loginData);
     this.langService.currentLang.subscribe((data) => {
       this.currentLang = data;
       this.title = data.DEPOSITORS;
       this.searchPlaceHolder = data?.SEARCHBAR_PLACEHOLDER;
     });
-    this.label = this.loginService.loginData?.collectionAgentDetails?.label;
-    this.endUsers = this.loginService.loginData.data?.endUsers;
+    // this.label = this.loginService.loginData?.collectionAgentDetails?.label;
+    this.endUsers = this.loginService.loginData.endUsers;
   }
 
   handleInput(event: any) {
     const query = event.target.value.toLowerCase();
-    this.endUsers = this.loginService.loginData.data.endUsers.filter(
+
+    this.endUsers = this.loginService.loginData.endUsers.filter(
       (d: any) => d.name.toLowerCase().indexOf(query) > -1
     );
   }
@@ -73,5 +74,4 @@ export class NewInvoicePage implements OnInit {
       dialogTitle: 'Share',
     });
   }
-
 }
