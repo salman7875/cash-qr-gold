@@ -9,7 +9,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-list>
+  <!-- <ion-list>
     <ion-item>
       <ion-select
         placeholder="Select a User"
@@ -30,9 +30,79 @@
         </ion-select-option>
       </ion-select>
     </ion-item>
-  </ion-list>
+  </ion-list> -->
 
-  <ion-item lines="none">
+  <ion-item>
+    <ion-label>Transactions</ion-label>
+    <ion-icon
+      name="filter-outline"
+      size="large"
+      (click)="handleModal(true)"
+    ></ion-icon>
+  </ion-item>
+
+  <ion-modal [isOpen]="isModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Transaction History</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="handleModal(false)">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="wrapper">
+          <h3>Payment Source</h3>
+          <ion-chip
+            *ngFor="let data of paymentSource"
+            [outline]="true"
+            (click)="handleSelectFilter('source', data)"
+            color="primary"
+            >{{ data.title }}</ion-chip
+          >
+        </div>
+        <div class="wrapper">
+          <h3>Status</h3>
+          <ion-chip
+            *ngFor="let data of paymentStatus"
+            [outline]="isChipOutlined('status', data.id)"
+            color="primary"
+            (click)="handleSelectFilter('status', data)"
+            >{{ data.title }}</ion-chip
+          >
+        </div>
+        <div class="wrapper">
+          <h3>Type</h3>
+          <ion-chip
+            *ngFor="let data of paymentType"
+            [outline]="isChipOutlined('mode', data.id)"
+            color="primary"
+            (click)="handleSelectFilter('mode', data)"
+            >{{ data.title }}</ion-chip
+          >
+        </div>
+        <div class="wrapper">
+          <h3>Months</h3>
+          <ion-chip
+            *ngFor="let data of paymentMonths"
+            [outline]="isChipOutlined('month', data.id)"
+            color="primary"
+            (click)="handleSelectFilter('month', data)"
+            >{{ data.title }}</ion-chip
+          >
+        </div>
+      </ion-content>
+      <ion-footer>
+        <div>
+          <ion-button>Reset</ion-button>
+          <ion-button (click)="handleFilter()">Apply</ion-button>
+        </div>
+      </ion-footer>
+    </ng-template>
+  </ion-modal>
+
+  <!-- <ion-item lines="none">
     <ion-segment #filter (ionChange)="dateForFilter(filter)" value="Today">
       <ion-segment-button value="Today">
         <ion-label>Today</ion-label>
@@ -50,7 +120,7 @@
         <ion-label>Custom</ion-label>
       </ion-segment-button>
     </ion-segment>
-  </ion-item>
+  </ion-item> -->
 
   <div *ngIf="selectMode === 'Custom'">
     <ion-grid>
@@ -148,10 +218,17 @@
         </div>
         <div *ngIf="selectedUserChId === 'all'">
           <h6>
-            <span *ngIf="transaction.endUserAccountNo" style="margin-left: 0px; margin-right: 1.5rem;"
-              >A/C No. <span class="highlight"> {{transaction.endUserAccountNo}} </span></span
+            <span
+              *ngIf="transaction.endUserAccountNo"
+              style="margin-left: 0px; margin-right: 1.5rem"
+              >A/C No.
+              <span class="highlight">
+                {{transaction.endUserAccountNo}}
+              </span></span
             >
-            <span class="highlight"> {{ transaction.VA_label | uppercase}} </span>
+            <span class="highlight">
+              {{ transaction.VA_label | uppercase}}
+            </span>
           </h6>
         </div>
         <div></div>

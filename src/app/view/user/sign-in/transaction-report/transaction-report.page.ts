@@ -1,10 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { TransactionReportService } from './service/transaction-report.service';
 
-import {format} from 'date-fns/format';
-import {parseISO} from 'date-fns/parseISO';
+import { format } from 'date-fns/format';
+import { parseISO } from 'date-fns/parseISO';
 import { LanguageService } from 'src/app/shared/services/language/language.service';
 import { LoginService } from '../../login/service/login.service';
+
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+interface FilterData {
+  upiIds?: any[];
+  page: number;
+  pageSize?: number;
+  startDate?: string[];
+  endDate?: string[];
+  status?: any[];
+  mode?: any[];
+  month?: any[];
+}
 
 @Component({
   selector: 'app-transaction-report',
@@ -12,7 +38,28 @@ import { LoginService } from '../../login/service/login.service';
   styleUrls: ['./transaction-report.page.scss'],
 })
 export class TransactionReportPage implements OnInit {
+  paymentSource: any = [{ id: 1, title: 'SBI Bank - 8888' }];
+  paymentStatus: any = [
+    { id: 1, title: 'Successful' },
+    { id: 2, title: 'Pending' },
+    { id: 3, title: 'Unsetteled' },
+    { id: 4, title: 'Failed' },
+  ];
+
+  paymentType: any = [
+    { id: 1, title: 'IMPS' },
+    { id: 2, title: 'CASH' },
+    { id: 3, title: 'UPI' },
+    { id: 3, title: 'GOLD' },
+  ];
+  paymentMonths: any = [];
+
+  selectedStatus = [];
+  selectedMode = [];
+  selectedMonths = [];
+
   //variable
+  isModalOpen: boolean = false;
   yearTransactionHistory: any; // Transaction history of the all the users for the last year
   endUsers: any; //All the end users of the collection agent
   chIds: any; // Ch_Ids of the end users
@@ -20,7 +67,6 @@ export class TransactionReportPage implements OnInit {
   filteredTxnHistory: any; //transaction history that is being showed to the user
   frombtn: string;
   tobtn: string;
-  
 
   // variables for date and time
   selectMode: string = 'Today'; // Today | Week | Month | Year
@@ -30,6 +76,11 @@ export class TransactionReportPage implements OnInit {
   toDateFormattedString: any;
 
   currentLang: any;
+
+  // TRANSACTION FILTER DATA
+  filterData: FilterData = {
+    page: 1,
+  };
 
   constructor(
     private tracsactionService: TransactionReportService,
@@ -54,6 +105,15 @@ export class TransactionReportPage implements OnInit {
   }
   ngOnInit() {
     let today = new Date();
+    const unformatedDate = this.getMonthsList(today);
+    this.paymentMonths = unformatedDate.map((item) => ({
+      id: Math.random(),
+      title: `${MONTHS[item.month]}${item.year.toString().substring(2)}`,
+      startDate: item.startDate,
+      endDate: item.endDate,
+    }));
+    console.log(this.paymentMonths);
+
     let year = today.getFullYear();
     today.setFullYear(year - 1);
     let formYear = format(today, 'yyyy-MM-dd') + 'T09:00:00.000Z';
@@ -75,6 +135,34 @@ export class TransactionReportPage implements OnInit {
     // });
   }
 
+  getMonthsList(date: Date) {
+    const currentMonth = date.getMonth(); // 0-indexed
+    const currentYear = date.getFullYear();
+
+    const months = [];
+    // Start from April of the previous year
+    let year = currentYear - 1;
+    let month = currentMonth;
+
+    // Iterate until the current month of the current year
+    while (!(year === currentYear && month === currentMonth)) {
+      months.push({
+        year,
+        month: month,
+        startDate: new Date(year, month, 1).toLocaleDateString(),
+        endDate: new Date(year, month + 1, 0).toLocaleDateString(),
+      }); // Adding 1 to month to make it 1-indexed
+      month++;
+      if (month > 11) {
+        // Reset month to January and increment the year
+        month = 0;
+        year++;
+      }
+    }
+
+    return months;
+  }
+
   transactionData(start: any = '', end: any = '') {
     let startDate: any = new Date();
     let endDate: any = new Date();
@@ -89,15 +177,16 @@ export class TransactionReportPage implements OnInit {
     this.tracsactionService.applyCustom(data).subscribe((data: any) => {
       this.yearTransactionHistory = data.reverse();
       console.log('Year Txn History', this.yearTransactionHistory);
-       this.yearTransactionHistory.map((data:any)=>{
+      this.yearTransactionHistory.map((data: any) => {
         // console.log(data.VA_label);
         for (let i = 0; i < this.loginService.loginData.endUsers.length; i++) {
-          let username=this.loginService.loginData.endUsers[i].name
-          username=username.replace(/ /g,"").toLowerCase()
-          if(username === data.VA_label.toLowerCase()){
-            return data.VA_label = this.loginService.loginData.endUsers[i].name
+          let username = this.loginService.loginData.endUsers[i].name;
+          username = username.replace(/ /g, '').toLowerCase();
+          if (username === data.VA_label.toLowerCase()) {
+            return (data.VA_label =
+              this.loginService.loginData.endUsers[i].name);
           }
-          return ;
+          return;
         }
       });
 
@@ -263,4 +352,40 @@ export class TransactionReportPage implements OnInit {
     }, 200);
   }
 
+  handleModal(isOpen: boolean) {
+    this.isModalOpen = isOpen;
+  }
+
+  handleSelectFilter(type: any, data: any) {
+    console.log(type, data);
+    if (type === 'status') {
+      this.addData(this.filterData, type, data);
+    } else if (type === 'mode') {
+      this.addData(this.filterData, type, data);
+    } else if (type === 'month') {
+      if (!this.filterData['startDate'] || !this.filterData['endDate']) {
+        this.filterData['startDate'] = [];
+        this.filterData['endDate'] = [];
+      }
+      this.filterData['startDate'].push(data.startDate);
+      this.filterData['endDate'].push(data.endDate);
+    }
+  }
+
+  handleFilter() {
+    console.log(this.filterData);
+  }
+
+  addData(parent: any, type: any, data: any) {
+    if (!parent[type]) {
+      parent[type] = [];
+    }
+    parent[type]?.push(data);
+  }
+
+  isChipOutlined(type: keyof FilterData, id: number) {
+    const selectedChips: any = this.filterData[type] || [];
+    const isSelected = selectedChips.some((chip: any) => chip.id === id);
+    return !isSelected;
+  }
 }
