@@ -13,9 +13,9 @@ import { Preferences } from '@capacitor/preferences';
 export class LoginComponent implements OnInit {
   errMsg: string;
   Credential: any = {
-    mobile: 9876543225,
+    mobile: '9876543225',
     // mobileno: '',
-    password: '',
+    password: '123456',
   };
   // loginWithOtp = false;
 

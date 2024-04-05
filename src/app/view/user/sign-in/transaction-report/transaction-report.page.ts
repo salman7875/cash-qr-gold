@@ -5,7 +5,33 @@ import { format } from 'date-fns/format';
 import { parseISO } from 'date-fns/parseISO';
 import { LanguageService } from 'src/app/shared/services/language/language.service';
 import { LoginService } from '../../login/service/login.service';
-import { InfiniteScrollCustomEvent } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, IonInfiniteScroll } from '@ionic/angular';
+
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+interface FilterData {
+  page: any;
+  pageSize?: any;
+  startDate?: any
+  endDate?: any;
+  upiIds?: any[];
+  status?: any;
+  paymentMode?: any[];
+  month?: any[];
+}
 
 @Component({
   selector: 'app-transaction-report',
@@ -13,7 +39,20 @@ import { InfiniteScrollCustomEvent } from '@ionic/angular';
   styleUrls: ['./transaction-report.page.scss'],
 })
 export class TransactionReportPage implements OnInit {
+  paymentStatus: any = [
+    { id: 1, title: 'received' },
+    { id: 2, title: 'unsettled' },
+  ];
+
+  paymentType: any = [
+    { id: 1, title: 'IMPS' },
+    { id: 2, title: 'CASH' },
+    { id: 3, title: 'UPI' },
+  ];
+  paymentMonths: any = [];
+
   //variable
+  isModalOpen: boolean = false;
   yearTransactionHistory: any; // Transaction history of the all the users for the last year
   endUsers: any; //All the end users of the collection agent
   chIds: any; // Ch_Ids of the end users
@@ -21,8 +60,6 @@ export class TransactionReportPage implements OnInit {
   filteredTxnHistory: any; //transaction history that is being showed to the user
   frombtn: string;
   tobtn: string;
-  page: number = 1;
-
 
   // variables for date and time
   selectMode: string = 'Today'; // Today | Week | Month | Year
@@ -33,8 +70,14 @@ export class TransactionReportPage implements OnInit {
 
   currentLang: any;
 
+  isRangeOpen: boolean = false
+  // TRANSACTION FILTER DATA
+  filterData: FilterData = {
+    page: 1,
+  };
+
   constructor(
-    private tracsactionService: TransactionReportService,
+    private transactionService: TransactionReportService,
     private langservice: LanguageService,
     private loginService: LoginService
   ) {
@@ -56,6 +99,15 @@ export class TransactionReportPage implements OnInit {
   }
   ngOnInit() {
     let today = new Date();
+    const unformatedDate = this.getMonthsList(today);
+    this.paymentMonths = unformatedDate.map((item) => ({
+      id: Math.random(),
+      title: `${MONTHS[item.month]}${item.year.toString().substring(2)}`,
+      startDate: item.startDate,
+      endDate: item.endDate,
+    }));
+    console.log(this.paymentMonths);
+
     let year = today.getFullYear();
     today.setFullYear(year - 1);
     let formYear = format(today, 'yyyy-MM-dd') + 'T09:00:00.000Z';
@@ -77,6 +129,34 @@ export class TransactionReportPage implements OnInit {
     // });
   }
 
+  getMonthsList(date: Date) {
+    const currentMonth = date.getMonth(); // 0-indexed
+    const currentYear = date.getFullYear();
+
+    const months = [];
+    // Start from April of the previous year
+    let year = currentYear - 1;
+    let month = currentMonth;
+
+    // Iterate until the current month of the current year
+    while (!(year === currentYear && month === currentMonth)) {
+      months.push({
+        year,
+        month: month,
+        startDate: new Date(year, month, 1).toLocaleDateString(),
+        endDate: new Date(year, month + 1, 0).toLocaleDateString(),
+      }); // Adding 1 to month to make it 1-indexed
+      month++;
+      if (month > 11) {
+        // Reset month to January and increment the year
+        month = 0;
+        year++;
+      }
+    }
+
+    return months;
+  }
+
   transactionData(start: any = '', end: any = '') {
     let startDate: any = new Date();
     let endDate: any = new Date();
@@ -88,16 +168,17 @@ export class TransactionReportPage implements OnInit {
     endDate = format(endDate, 'yyyy-MM-dd');
     const data = { chIds: this.chIds, startDate, endDate };
     console.log(startDate, endDate);
-    this.tracsactionService.applyCustom(data).subscribe((data: any) => {
+    this.transactionService.applyCustom(data).subscribe((data: any) => {
       this.yearTransactionHistory = data.reverse();
       console.log('Year Txn History', this.yearTransactionHistory);
       this.yearTransactionHistory.map((data: any) => {
         // console.log(data.VA_label);
         for (let i = 0; i < this.loginService.loginData.endUsers.length; i++) {
-          let username = this.loginService.loginData.endUsers[i].name
-          username = username.replace(/ /g, "").toLowerCase()
+          let username = this.loginService.loginData.endUsers[i].name;
+          username = username.replace(/ /g, '').toLowerCase();
           if (username === data.VA_label.toLowerCase()) {
-            return data.VA_label = this.loginService.loginData.endUsers[i].name
+            return (data.VA_label =
+              this.loginService.loginData.endUsers[i].name);
           }
           return;
         }
@@ -217,6 +298,7 @@ export class TransactionReportPage implements OnInit {
       'yyyy-MM-dd'
     );
   }
+
   customFromDate(enteredDate: any) {
     console.log('From date enter (raw) ', enteredDate);
     this.fromDateFormattedString = format(parseISO(enteredDate), 'yyyy-MM-dd');
@@ -224,6 +306,7 @@ export class TransactionReportPage implements OnInit {
 
     this.fromShowPicker = false;
   }
+
   customToDate(enteredDate: any) {
     console.log('To date enter (raw) ', enteredDate);
     this.toDateFormattedString = format(parseISO(enteredDate), 'yyyy-MM-dd');
@@ -231,6 +314,7 @@ export class TransactionReportPage implements OnInit {
 
     this.toShowPicker = false;
   }
+
   applyCustom() {
     console.log('from date :', this.fromDateFormattedString);
     console.log('To date :', this.toDateFormattedString);
@@ -239,7 +323,7 @@ export class TransactionReportPage implements OnInit {
       startDate: this.fromDateFormattedString,
       endDate: this.toDateFormattedString,
     };
-    this.tracsactionService.applyCustom(data).subscribe((data) => {
+    this.transactionService.applyCustom(data).subscribe((data) => {
       this.filteredTxnHistory =
         this.selectedUserChId === 'all'
           ? data.reverse()
@@ -265,11 +349,79 @@ export class TransactionReportPage implements OnInit {
     }, 200);
   }
 
-  onIonInfinite(event: InfiniteScrollCustomEvent) {
-    // this.page += 1
-    console.log(event.eventPhase);
-    
-    event.target.complete()
+  handleModal(isOpen: boolean) {
+    this.isModalOpen = isOpen;
   }
 
+  handleSelectFilter(type: keyof FilterData, data: any) {
+    const dataExists = this.filterData[type]?.find((d: any) => d.id == data.id)
+    if (dataExists) {
+      if (type === 'status' || type === 'month' || type === 'paymentMode' || type === 'upiIds') {
+        const filtered: any = this.filterData[type]?.filter((d: any) => d.id !== data.id)
+        return this.filterData[type] = filtered
+      }
+    }
+
+    if (type === 'month') {
+      if (!this.filterData[type]) {
+        this.filterData[type] = []
+      }
+      this.filterData[type]?.push(data)
+      const sortedMonths = this.filterData['month']?.sort(this.sortMonths)
+      this.filterData['startDate'] = sortedMonths?.at(0).startDate
+      this.filterData['endDate'] = sortedMonths?.at(-1).endDate;
+    } else if (type === 'status' || type === 'paymentMode') {
+      if (!this.filterData[type]) {
+        this.filterData[type] = []
+      }
+      this.filterData[type]?.push(data)
+    }
+  }
+
+  handleFilter() {
+    const { month, ...other } = this.filterData
+    const formData: any = {}
+    for (const data of Object.entries(other)) {
+      if (Array.isArray(data[1])) {
+        if (!formData[data[0]]) {
+          formData[data[0]] = []
+          formData[data[0]]?.push(data[1][0].title)
+        }
+      } else {
+        formData[data[0]] = data[1]
+      }
+    }
+
+    console.log(formData);
+
+
+    this.transactionService.applyCustom(formData).subscribe(data => {
+      console.log('******************************', data);
+    })
+
+  }
+
+  isChipOutlined(type: keyof FilterData, id: number) {
+    let isSelected = true
+    if (type === 'month' || type === 'status' || type === 'paymentMode' || type === 'upiIds') {
+      isSelected = this.filterData[type]?.find((d: any) => d.id === id)
+    }
+    return !isSelected ? true : false;
+  }
+
+  sortMonths(a: any, b: any) {
+    const dateA = new Date(a)
+    const dateB = new Date(b)
+    if (dateA < dateB) return -1
+    if (dateA > dateB) return 1
+    return 0
+  }
+
+  openCustom() {
+    this.isRangeOpen = !this.isRangeOpen;
+  }
+
+  onIonInfinite(event: any) {
+    console.log(event);
+  }
 }
