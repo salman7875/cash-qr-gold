@@ -25,7 +25,7 @@ const MONTHS = [
 interface FilterData {
   page: any;
   pageSize?: any;
-  startDate?: any
+  startDate?: any;
   endDate?: any;
   upiIds?: any[];
   status?: any;
@@ -70,7 +70,7 @@ export class TransactionReportPage implements OnInit {
 
   currentLang: any;
 
-  isRangeOpen: boolean = false
+  isRangeOpen: boolean = false;
   // TRANSACTION FILTER DATA
   filterData: FilterData = {
     page: 1,
@@ -106,7 +106,6 @@ export class TransactionReportPage implements OnInit {
       startDate: item.startDate,
       endDate: item.endDate,
     }));
-    console.log(this.paymentMonths);
 
     let year = today.getFullYear();
     today.setFullYear(year - 1);
@@ -301,38 +300,41 @@ export class TransactionReportPage implements OnInit {
 
   customFromDate(enteredDate: any) {
     console.log('From date enter (raw) ', enteredDate);
-    this.fromDateFormattedString = format(parseISO(enteredDate), 'yyyy-MM-dd');
+    this.fromDateFormattedString = format(parseISO(enteredDate), 'dd-MM-YYYY');
     console.log('From date enter (formatted) ', this.fromDateFormattedString);
 
     this.fromShowPicker = false;
   }
 
-  customToDate(enteredDate: any) {
+  customDate(type: string, enteredDate: any) {
     console.log('To date enter (raw) ', enteredDate);
-    this.toDateFormattedString = format(parseISO(enteredDate), 'yyyy-MM-dd');
-    console.log('To date enter (formatted) ', this.toDateFormattedString);
-
+    if (type === 'start') {
+      this.filterData.startDate = format(parseISO(enteredDate), 'dd-MM-yyyy');
+    } else {
+      this.filterData.endDate = format(parseISO(enteredDate), 'dd-MM-yyyy');
+    }
+    this.filterData.month = [];
     this.toShowPicker = false;
   }
 
   applyCustom() {
     console.log('from date :', this.fromDateFormattedString);
     console.log('To date :', this.toDateFormattedString);
-    const data = {
-      chIds: this.chIds,
-      startDate: this.fromDateFormattedString,
-      endDate: this.toDateFormattedString,
-    };
-    this.transactionService.applyCustom(data).subscribe((data) => {
-      this.filteredTxnHistory =
-        this.selectedUserChId === 'all'
-          ? data.reverse()
-          : data
-            .reverse()
-            .filter(
-              (e) => e.Mct_App_RefNo.split('/')[1] == this.selectedUserChId
-            );
-    });
+    // const data = {
+    //   chIds: this.chIds,
+    //   startDate: this.fromDateFormattedString,
+    //   endDate: this.toDateFormattedString,
+    // };
+    // this.transactionService.applyCustom(data).subscribe((data) => {
+    //   this.filteredTxnHistory =
+    //     this.selectedUserChId === 'all'
+    //       ? data.reverse()
+    //       : data
+    //         .reverse()
+    //         .filter(
+    //           (e) => e.Mct_App_RefNo.split('/')[1] == this.selectedUserChId
+    //         );
+    // });
   }
 
   handleRefresh(event: any) {
@@ -354,67 +356,77 @@ export class TransactionReportPage implements OnInit {
   }
 
   handleSelectFilter(type: keyof FilterData, data: any) {
-    const dataExists = this.filterData[type]?.find((d: any) => d.id == data.id)
+    const dataExists = this.filterData[type]?.find((d: any) => d.id == data.id);
     if (dataExists) {
-      if (type === 'status' || type === 'month' || type === 'paymentMode' || type === 'upiIds') {
-        const filtered: any = this.filterData[type]?.filter((d: any) => d.id !== data.id)
-        return this.filterData[type] = filtered
+      if (
+        type === 'status' ||
+        type === 'month' ||
+        type === 'paymentMode' ||
+        type === 'upiIds'
+      ) {
+        const filtered: any = this.filterData[type]?.filter(
+          (d: any) => d.id !== data.id
+        );
+        return (this.filterData[type] = filtered);
       }
     }
 
     if (type === 'month') {
       if (!this.filterData[type]) {
-        this.filterData[type] = []
+        this.filterData[type] = [];
       }
-      this.filterData[type]?.push(data)
-      const sortedMonths = this.filterData['month']?.sort(this.sortMonths)
-      this.filterData['startDate'] = sortedMonths?.at(0).startDate
+      this.filterData[type]?.push(data);
+      const sortedMonths = this.filterData['month']?.sort(this.sortMonths);
+      this.filterData['startDate'] = sortedMonths?.at(0).startDate;
       this.filterData['endDate'] = sortedMonths?.at(-1).endDate;
     } else if (type === 'status' || type === 'paymentMode') {
       if (!this.filterData[type]) {
-        this.filterData[type] = []
+        this.filterData[type] = [];
       }
-      this.filterData[type]?.push(data)
+      this.filterData[type]?.push(data);
     }
   }
 
   handleFilter() {
-    const { month, ...other } = this.filterData
-    const formData: any = {}
+    const { month, ...other } = this.filterData;
+    const formData: any = {};
     for (const data of Object.entries(other)) {
       if (Array.isArray(data[1])) {
         if (!formData[data[0]]) {
-          formData[data[0]] = []
-          formData[data[0]]?.push(data[1][0].title)
+          formData[data[0]] = [];
+          formData[data[0]]?.push(data[1][0].title);
         }
       } else {
-        formData[data[0]] = data[1]
+        formData[data[0]] = data[1];
       }
     }
 
     console.log(formData);
 
-
-    this.transactionService.applyCustom(formData).subscribe(data => {
+    this.transactionService.applyCustom(formData).subscribe((data) => {
       console.log('******************************', data);
-    })
-
+    });
   }
 
   isChipOutlined(type: keyof FilterData, id: number) {
-    let isSelected = true
-    if (type === 'month' || type === 'status' || type === 'paymentMode' || type === 'upiIds') {
-      isSelected = this.filterData[type]?.find((d: any) => d.id === id)
+    let isSelected = true;
+    if (
+      type === 'month' ||
+      type === 'status' ||
+      type === 'paymentMode' ||
+      type === 'upiIds'
+    ) {
+      isSelected = this.filterData[type]?.find((d: any) => d.id === id);
     }
     return !isSelected ? true : false;
   }
 
   sortMonths(a: any, b: any) {
-    const dateA = new Date(a)
-    const dateB = new Date(b)
-    if (dateA < dateB) return -1
-    if (dateA > dateB) return 1
-    return 0
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+    if (dateA < dateB) return -1;
+    if (dateA > dateB) return 1;
+    return 0;
   }
 
   openCustom() {

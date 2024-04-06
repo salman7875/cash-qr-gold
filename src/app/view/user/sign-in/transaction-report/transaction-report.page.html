@@ -113,7 +113,7 @@
               <ion-col size="6">
                 <ion-item id="From" lines="none">
                   <ion-icon icon="calendar-outline" color="primary"></ion-icon>
-                  <ion-text style="font-size: 1rem" class="ion-text-center">
+                  <ion-text style="font-size: 1rem; margin-left: .5rem;" class="ion-text-center">
                     {{fromDateFormattedString | date:"dd-MM-yyyy"}}
                   </ion-text>
                 </ion-item>
@@ -122,15 +122,10 @@
               <ion-col size="6">
                 <ion-item id="To" lines="none">
                   <ion-icon icon="calendar-outline" color="primary"></ion-icon>
-                  <ion-text style="font-size: 1rem">
+                  <ion-text style="font-size: 1rem; margin-left: .5rem;">
                     {{toDateFormattedString | date:"dd-MM-yyyy"}}
                   </ion-text>
                 </ion-item>
-              </ion-col>
-              <ion-col>
-                <ion-button expand="full" (click)="applyCustom()"
-                  >Apply</ion-button
-                >
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -143,7 +138,7 @@
                   presentation="date"
                   [value]="fromDateFormattedString"
                   size="cover"
-                  (ionChange)="customFromDate(todateTime.value)"
+                  (ionChange)="customDate('start',todateTime.value)"
                   showDefaultButtons="true"
                   (ionCancel)="fromShowPicker = false;"
                 >
@@ -159,7 +154,7 @@
                   presentation="date"
                   [value]="toDateFormattedString"
                   size="cover"
-                  (ionChange)="customToDate(fromdateTime.value)"
+                  (ionChange)="customDate('end',fromdateTime.value)"
                   showDefaultButtons="true"
                   (ionCancel)="toShowPicker = false;"
                 >
