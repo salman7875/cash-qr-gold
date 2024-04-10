@@ -20,11 +20,11 @@ ion-modal {
       display: flex;
       align-items: center;
       padding: 0 1.25rem;
-      gap: .5rem;
+      gap: 0.5rem;
 
       ion-button {
         flex: 1;
-        padding: .7rem;
+        padding: 0.7rem;
         font-size: 1.2rem;
       }
     }
@@ -33,7 +33,14 @@ ion-modal {
 
 .extrapart {
   height: 5rem;
-  visibility: hidden;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    font-size: 1.2rem;
+  }
 }
 span {
   font-size: small;

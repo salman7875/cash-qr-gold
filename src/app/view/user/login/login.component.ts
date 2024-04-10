@@ -13,9 +13,8 @@ import { Preferences } from '@capacitor/preferences';
 export class LoginComponent implements OnInit {
   errMsg: string;
   Credential: any = {
-    mobile: '9876543225',
-    // mobileno: '',
-    password: '123456',
+    username: '',
+    password: '',
   };
   // loginWithOtp = false;
 
@@ -24,7 +23,7 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private loginService: LoginService,
     private localStorageService: LocalstorageService
-  ) {}
+  ) { }
 
   ngOnInit() {
     console.log(this.route.parent);
@@ -46,7 +45,7 @@ export class LoginComponent implements OnInit {
     } */
     const browserToken = this.localStorageService.getItem('browserToken');
     const data = {
-      mobile: Number(this.Credential.mobile),
+      username: this.Credential.username,
       password: this.Credential.password,
       browserToken,
       appId: 1,
