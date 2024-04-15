@@ -54,6 +54,8 @@ export class TransactionReportPage implements OnInit {
   paymentHistory: any = [];
   endUsers: any = [];
 
+  formData: any = {}
+
   //variable
   isModalOpen: boolean = false;
   yearTransactionHistory: any; // Transaction history of the all the users for the last year
@@ -105,7 +107,11 @@ export class TransactionReportPage implements OnInit {
       page: 1,
       pageSize: 5
     }
-    this.transactionService.applyCustom(formData).subscribe((res: any) => {
+    this.formData = {
+      page: 1,
+      pageSize: 5
+    }
+    this.transactionService.applyCustom(this.formData).subscribe((res: any) => {
       this.paymentHistory = res.data
     });
     let today = new Date();
@@ -194,16 +200,9 @@ export class TransactionReportPage implements OnInit {
   }
 
   handleRefresh(event: any) {
-    setTimeout(() => {
-      // this.transactionData();
-      // event.target.cancel();
-      // const refresherContent = document.querySelector('ion-refresher-content');
-      // if (refresherContent) {
-      //   refresherContent.innerHTML = 'Refresh canceled';
-      // }
-      console.log(event);
-      event.target.complete();
-    }, 200);
+    this.transactionService.applyCustom(this.formData).subscribe((res: any) => {
+      event.target.complete()
+    })
   }
 
   handleModal(isOpen: boolean) {
@@ -264,25 +263,24 @@ export class TransactionReportPage implements OnInit {
     for (const data of Object.entries(other)) {
       if (Array.isArray(data[1])) {
         if (!formData[data[0]]) {
-          formData[data[0]] = [];
+          this.formData[data[0]] = [];
         }
         data[1].forEach(d => {
           if (d.title) {
-            formData[data[0]]?.push(d.title)
+            this.formData[data[0]]?.push(d.title)
           } else {
-            formData[data[0]]?.push(d)
+            this.formData[data[0]]?.push(d)
           }
         })
       } else {
-        formData[data[0]] = data[1];
+        this.formData[data[0]] = data[1];
       }
       console.log('++++++++++++++++++', data);
 
     }
-    formData.pageSize = 5
-    console.log(formData);
+    this.formData.pageSize = 5
 
-    this.transactionService.applyCustom(formData).subscribe((res: any) => {
+    this.transactionService.applyCustom(this.formData).subscribe((res: any) => {
       this.paymentHistory = res.data
       this.isModalOpen = false
     });

@@ -1,5 +1,5 @@
 <ion-content [scrollY]="true" class="ion-padding-bottom">
-  <ion-refresher
+  <!-- <ion-refresher
     slot="fixed"
     [pullFactor]="0.5"
     [pullMin]="100"
@@ -7,7 +7,7 @@
     (ionRefresh)="handleRefresh($event)"
   >
     <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+  </ion-refresher> -->
 
   <!-- <ion-list>
     <ion-item>
@@ -193,59 +193,73 @@
     </ion-segment>
   </ion-item> -->
 
-  <ion-card *ngFor="let transaction of paymentHistory" class="transaction-card">
-    <ion-card-header>
-      <ion-card-subtitle>
-        <div>
-          <span class="highlight">
-            {{ transaction.created_at | date }} {{ transaction.created_at | date
-            : "shortTime" }}
-          </span>
-          <span> {{ transaction.Mct_App_RefNo}} </span>
-        </div>
-
-        <div>
-          <h6>
-            Transaction No.
+  <ion-content>
+    <ion-refresher
+      slot="fixed"
+      [pullFactor]="0.5"
+      [pullMin]="100"
+      [pullMax]="200"
+      (ionRefresh)="handleRefresh($event)"
+    >
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <ion-card
+      *ngFor="let transaction of paymentHistory"
+      class="transaction-card"
+    >
+      <ion-card-header>
+        <ion-card-subtitle>
+          <div>
             <span class="highlight">
-              {{transaction.unique_transaction_reference}}
+              {{ transaction.created_at | date }} {{ transaction.created_at |
+              date : "shortTime" }}
             </span>
-          </h6>
-        </div>
-        <div *ngIf="selectedUserChId === 'all'">
-          <h6>
-            <span
-              *ngIf="transaction.endUserAccountNo"
-              style="margin-left: 0px; margin-right: 1.5rem"
-              >A/C No.
+            <span> {{ transaction.Mct_App_RefNo}} </span>
+          </div>
+
+          <div>
+            <h6>
+              Transaction No.
               <span class="highlight">
-                {{transaction.endUserAccountNo}}
-              </span></span
-            >
-            <span class="highlight"> {{ transaction.VPA | uppercase}} </span>
-          </h6>
-        </div>
-        <div></div>
-      </ion-card-subtitle>
-      <ion-card-title>
-        {{ transaction.amount | currency : "INR" }}
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <h6 *ngIf="selectedUserChId === 'all'">
-        Received from
-        <span *ngIf="selectedUserChId === 'all'" class="highlight">
-          {{ transaction.remitter_full_name }}
-        </span>
-      </h6>
-    </ion-card-content>
-  </ion-card>
-  <ion-infinite-scroll
-    (ionInfinite)="onIonInfinite($event)"
-    [disabled]="stopScrolling"
-  >
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+                {{transaction.unique_transaction_reference}}
+              </span>
+            </h6>
+          </div>
+          <div *ngIf="selectedUserChId === 'all'">
+            <h6>
+              <span
+                *ngIf="transaction.endUserAccountNo"
+                style="margin-left: 0px; margin-right: 1.5rem"
+                >A/C No.
+                <span class="highlight">
+                  {{transaction.endUserAccountNo}}
+                </span></span
+              >
+              <span class="highlight"> {{ transaction.VPA | uppercase}} </span>
+            </h6>
+          </div>
+          <div></div>
+        </ion-card-subtitle>
+        <ion-card-title>
+          {{ transaction.amount | currency : "INR" }}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <h6 *ngIf="selectedUserChId === 'all'">
+          Received from
+          <span *ngIf="selectedUserChId === 'all'" class="highlight">
+            {{ transaction.remitter_full_name }}
+          </span>
+        </h6>
+      </ion-card-content>
+    </ion-card>
+    <ion-infinite-scroll
+      (ionInfinite)="onIonInfinite($event)"
+      [disabled]="stopScrolling"
+    >
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-content>
   <div class="extrapart" *ngIf="stopScrolling">
     <p>this is extra part for to show the transaction</p>
   </div>
