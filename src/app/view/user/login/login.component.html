@@ -1,7 +1,8 @@
-<ion-content class="login" >
+<ion-content class="login">
   <div class="gradient-background">
     <div class="upperlogo">
-      <ion-img id="altpilogo"
+      <ion-img
+        id="altpilogo"
         src="../../../../assets/images/logo/Alt_Pi_Logo.png"
         alt="Alt-pi logo"
       ></ion-img>
@@ -13,9 +14,7 @@
             src="../../../../assets/images/logo/neupi_logo.png"
             alt="neUpi"
           ></ion-img> -->
-          <p class="daily-collection">
-           Daily Collect
-          </p>
+          <p class="daily-collection">Daily Collect</p>
           <div class="divider">
             <div class="whiteline"></div>
           </div>
@@ -32,45 +31,49 @@
             class="sales-form"
             (ngSubmit)="handleLogin(login)"
           >
-          <div *ngIf="errMsg">
-            <p style="color: var(--ion-color-danger)">
-              {{ errMsg }}
-            </p>
-          </div>
-
-          <input
-            placeholder="Mobile No"
-            class="form-input"
-            type="number"
-            name="mobile"
-            required
-            [(ngModel)]="Credential.mobileno"
-            #mobile="ngModel"
-          />
-
-          <div *ngIf="mobile.invalid && (mobile.dirty || mobile.touched)">
-            <div *ngIf="mobile.errors?.['required']">
-              <p style="color: red">Mobile Number is required.</p>
+            <div *ngIf="errMsg">
+              <p style="color: var(--ion-color-danger)">
+                {{ errMsg }}
+              </p>
             </div>
-          </div>
 
-          <input
-            placeholder="Password"
-            class="form-input"
-            type="text"
-            name="password"
-            required
-            [(ngModel)]="Credential.password"
-            #Password="ngModel"
-          />
-          <div
-            *ngIf="Password.invalid && (Password.dirty || Password.touched)"
-          >
-            <div *ngIf="Password.errors?.['required']">
-              <p style="color: red">Password is required.</p>
+            <input
+              placeholder="Username"
+              class="form-input"
+              type="text"
+              name="username"
+              required
+              [(ngModel)]="Credential.username"
+              #username="ngModel"
+            />
+
+            <div
+              *ngIf="username.invalid && (username.dirty || username.touched)"
+            >
+              <div *ngIf="username.errors?.['required']">
+                <p style="color: red">Username is required.</p>
+              </div>
             </div>
-          </div>
-            <ion-button [disabled]="login.invalid" type="submit"> Log In </ion-button>
+
+            <input
+              placeholder="Password"
+              class="form-input"
+              type="text"
+              name="password"
+              required
+              [(ngModel)]="Credential.password"
+              #Password="ngModel"
+            />
+            <div
+              *ngIf="Password.invalid && (Password.dirty || Password.touched)"
+            >
+              <div *ngIf="Password.errors?.['required']">
+                <p style="color: red">Password is required.</p>
+              </div>
+            </div>
+            <ion-button [disabled]="login.invalid" type="submit">
+              Log In
+            </ion-button>
           </form>
         </div>
       </div>

@@ -14,7 +14,7 @@ export class TransactionReportService {
   constructor(
     @Inject(App_Service_Config) public config: string,
     private http: HttpClient
-  ) {}
+  ) { }
 
   //caching methods
   // transactionHistory(reload: boolean = false, body:any) {
@@ -30,11 +30,6 @@ export class TransactionReportService {
 
   //trasanctionhistory
   applyCustom(body: any) {
-    return this.http.post(`${this.config}/shared/transactions`, body).pipe(
-      map((response: any) => response.msg),
-      mergeMap((msg: any[]) => msg),
-      distinct((transaction: any) => transaction.TxnId),
-      toArray()
-    );
+    return this.http.post(`${this.config}/transaction`, body)
   }
 }
