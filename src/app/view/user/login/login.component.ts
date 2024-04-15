@@ -4,17 +4,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { LocalstorageService } from 'src/app/shared/services/localStorageService/localstorage.service';
 import { LoginService } from './service/login.service';
+import { Preferences } from '@capacitor/preferences';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-
   errMsg: string;
   Credential: any = {
-    mobile: 9876543225,
-    // mobileno: '',
+    username: '',
     password: '',
   };
   // loginWithOtp = false;
@@ -46,7 +45,7 @@ export class LoginComponent implements OnInit {
     } */
     const browserToken = this.localStorageService.getItem('browserToken');
     const data = {
-      mobile: Number(this.Credential.mobile),
+      username: this.Credential.username,
       password: this.Credential.password,
       browserToken,
       appId: 1,
@@ -54,9 +53,12 @@ export class LoginComponent implements OnInit {
 
     console.log(data);
     this.loginService.sendLoginCredential(data).subscribe({
-      next: (data: any) => {
-        this.loginService.loginData = data;
-        console.log("login Data : ", this.loginService.loginData);
+      next: async (result: any) => {
+        this.loginService.loginData = result.data;
+        console.log('login Data : ', this.loginService.loginData);
+        await Preferences.set({ key: 'result', value: result.data });
+        await Preferences.set({ key: 'jwt', value: result.JWT });
+
         // this.router.navigate(['./signin'], { relativeTo: this.route.parent });
         this.router.navigateByUrl('views/user/signin');
         // this.localStorageService.setItem('AuthToken', data?.data?.AuthToken);
@@ -64,5 +66,4 @@ export class LoginComponent implements OnInit {
       error: (err) => (this.errMsg = err.error.error),
     });
   }
-
 }
