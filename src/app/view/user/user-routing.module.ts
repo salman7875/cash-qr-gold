@@ -13,7 +13,7 @@ const routes: Routes = [
         path: '',
         redirectTo: 'login',
         pathMatch: 'full'
-       },
+      },
       {
         path: 'login',
         component: LoginComponent,
@@ -23,6 +23,10 @@ const routes: Routes = [
         loadChildren: () =>
           import('./sign-in/sign-in.module').then((m) => m.SignInPageModule),
       },
+      {
+        path: 'signin-gold',
+        loadChildren: () => import('./signin-gold/signin-gold.module').then(m => m.SigninGoldPageModule)
+      },
     ],
   },
 ];
@@ -31,4 +35,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class UserPageRoutingModule {}
+export class UserPageRoutingModule { }

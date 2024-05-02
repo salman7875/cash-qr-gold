@@ -7,16 +7,17 @@ const routes: Routes = [
   //   path: '',
   //   component: AppComponent,
   //   children: [
-      {
-        path: '',
-        redirectTo: 'views',
-        pathMatch: 'full',
-      },
-      {
-        path: 'views',
-        loadChildren: () =>
-          import('./view/view.module').then((m) => m.ViewPageModule),
-      },
+  {
+    path: '',
+    redirectTo: 'views',
+    pathMatch: 'full',
+  },
+  {
+    path: 'views',
+    loadChildren: () =>
+      import('./view/view.module').then((m) => m.ViewPageModule),
+  },
+
   //   ],
   // },
 ];
@@ -27,4 +28,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

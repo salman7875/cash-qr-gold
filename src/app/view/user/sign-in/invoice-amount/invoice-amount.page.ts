@@ -1,6 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LanguageService } from 'src/app/shared/services/language/language.service';
+import { GoldService } from './service/gold.service';
 
 @Component({
   selector: 'app-invoice-amount',
@@ -30,10 +32,13 @@ export class InvoiceAmountPage implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private goldService: GoldService
   ) {
     this.enterUserData =
       this.router.getCurrentNavigation()?.extras.state?.['userData'];
+    this.depositerVpa = this.enterUserData.vpa
+
   }
 
   ngOnInit() {
@@ -45,7 +50,7 @@ export class InvoiceAmountPage implements OnInit {
     this.back = this.currentLang?.BACK
     this.amountPlaceHolder = this.currentLang?.AMOUNTINPUT_PLACEHOLDER
   }
-  
+
 
   generateHandler(type: string) {
     if (this.amount > 0) {
@@ -73,4 +78,36 @@ export class InvoiceAmountPage implements OnInit {
     }
   }
 
+  handleGoldAuth() {
+    this.goldService.login(this.depositerVpa, { email: '', password: '' }).subscribe({
+      next: async (res: any) => {
+        if (res.JWT) {
+          console.log(res.JWT);
+
+          // this.goldService.buyGold(res.JWT, { metalType: 'GOLD', quantity: '' }, this.amount).subscribe(async (data: any) => {
+          //   //   // this.isDialogOpen = true
+          //   //   // if (res.event === 'sucess') {
+          //   //   //   this.headerMsg = 'Purchase Successfull 🎉'
+          //   //   //   this.message = `You have successfully purchased the ${this.pageType} you can check it in your profile.`
+          //   //   // } else {
+          //   //   //   this.isDialogOpen = true
+          //   //   //   this.headerMsg = 'Purchase Failed ❌'
+          //   //   //   this.message = 'Your purchased failed Your money will be back to your account!'
+          //   //   // }
+          //   //   console.log(res);
+          //   console.log(data);
+
+          // });
+          const response = this.goldService.buyGold(res.JWT, { metalType: 'GOLD', quantity: '' }, this.amount)
+          console.log('--------------', response);
+
+        }
+      },
+      error: (err) => {
+        console.log(err);
+        this.router.navigateByUrl('/views/user/signin-gold')
+      }
+
+    })
+  }
 }
