@@ -6,11 +6,21 @@
     <ion-card-content>
       <div class="text">
         <form>
-          <ion-input name="depositerName" type="text" [value]="enterUserData?.name" readonly
-            fill="outline"></ion-input>
+          <ion-input
+            name="depositerName"
+            type="text"
+            [value]="enterUserData?.name"
+            readonly
+            fill="outline"
+          ></ion-input>
           <br />
-          <ion-input [(ngModel)]="amount" name="amount" type="number" [placeholder]="amountPlaceHolder"
-            fill="outline"></ion-input>
+          <ion-input
+            [(ngModel)]="amount"
+            name="amount"
+            type="number"
+            [placeholder]="amountPlaceHolder"
+            fill="outline"
+          ></ion-input>
         </form>
       </div>
     </ion-card-content>
@@ -18,8 +28,13 @@
   <br />
 
   <div class="center">
-    <ion-button type="submit" [disabled]="isButtonDisabled" (click)="generateHandler('q')">
-      {{Generate_qr}}</ion-button>
+    <ion-button
+      type="submit"
+      [disabled]="isButtonDisabled"
+      (click)="generateHandler('q')"
+    >
+      {{Generate_qr}}</ion-button
+    >
     <ion-button type="submit" (click)="generateHandler('c')">Cash</ion-button>
     <ion-button type="submit" (click)="handleGoldAuth()">Gold</ion-button>
   </div>
@@ -32,3 +47,11 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+
+<ion-alert
+  [isOpen]="isDialogOpen"
+  [header]="headerMsg"
+  [message]="message"
+  [buttons]="alertButtons"
+  (didDismiss)="isDialogOpen = false"
+></ion-alert>

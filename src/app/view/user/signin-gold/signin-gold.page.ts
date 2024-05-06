@@ -10,6 +10,7 @@ import { GoldService } from '../sign-in/invoice-amount/service/gold.service';
   styleUrls: ['./signin-gold.page.scss'],
 })
 export class SigninGoldPage implements OnInit {
+  depositorVpa: any;
   firstName = '';
   lastName = '';
   state = '';
@@ -47,8 +48,8 @@ export class SigninGoldPage implements OnInit {
     private localStorage: LocalstorageService,
     private goldService: GoldService,
     private router: Router,
-    private http: HttpClient,
-  ) { }
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.fetchStates(this.stateName, this.statePage);
@@ -57,6 +58,9 @@ export class SigninGoldPage implements OnInit {
       this.cityName,
       this.cityPage
     );
+    this.depositorVpa =
+      this.router.getCurrentNavigation()?.extras.state?.['vpa'];
+    console.log('*********', this.depositorVpa);
   }
 
   handleFocus(element: string) {
@@ -64,11 +68,9 @@ export class SigninGoldPage implements OnInit {
   }
 
   fetchStates(stateName: any, pageNo: any) {
-    this.goldService
-      .getStates({ stateName, pageNo })
-      .subscribe((res: any) => {
-        this.states = res.result.data;
-      });
+    this.goldService.getStates({ stateName, pageNo }).subscribe((res: any) => {
+      this.states = res.result.data;
+    });
   }
 
   fetchCities(id: any, cityName: any, pageNo: any) {
@@ -115,16 +117,18 @@ export class SigninGoldPage implements OnInit {
     // localStorage.setItem('signup', JSON.stringify(this.personalData))
     this.localStorage.setItem('signup', JSON.stringify(this.personalData));
     // this.router.navigate(['signin/selfie']);
-    this.goldService.signin(this.personalData).subscribe((res: any) => {
-      if (res.Event === 'success') {
-        this.showToast('Purchased Successfully!');
-        this.localStorage.removeItem('signup');
-        this.router.navigateByUrl('/login');
-      } else {
-        console.log(`Error while onboarding user.`);
-        this.showToast('Failed Transaction!');
-      }
-    });
+    this.goldService
+      .signin(this.depositorVpa, this.personalData)
+      .subscribe((res: any) => {
+        if (res.Event === 'success') {
+          this.showToast('Purchased Successfully!');
+          this.localStorage.removeItem('signup');
+          this.router.navigateByUrl('/login');
+        } else {
+          console.log(`Error while onboarding user.`);
+          this.showToast('Failed Transaction!');
+        }
+      });
   }
 
   handleRetake() {
@@ -134,5 +138,4 @@ export class SigninGoldPage implements OnInit {
     this.personalData.mobileNumber = '';
     this.aadharNo = '';
   }
-
 }
